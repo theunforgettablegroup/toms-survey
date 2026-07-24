@@ -114,7 +114,7 @@ const SCORING_RULES: ScoringRule[] = [
     question: 'Is there a history of serious medical issues in your biological family?',
     weight: 10,
     answerScores: {
-      "None/Don\'t Know": 100,
+      "None/Don't Know": 100,
       Minor: 50,
       Major: 0,
     },
@@ -156,7 +156,7 @@ const SCORING_RULES: ScoringRule[] = [
     question: 'How is your use of Prescription Medications?',
     weight: 3,
     answerScores: {
-      "Don\'t take any meds on regular basis": 100,
+      "Don't take any meds on regular basis": 100,
       'Take few meds on regular basis': 50,
       'Take several meds on a regular basis': 25,
       'Take several meds on a regular basis including some high cost specialty drugs': 10,
