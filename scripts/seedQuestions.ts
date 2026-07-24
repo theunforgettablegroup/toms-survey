@@ -174,7 +174,12 @@ async function seed() {
   validateNoDuplicateQuestionText(questions);
 
   try {
-    const healthcheck = await fetch(`${supabaseUrl}/rest/v1/`);
+    const healthcheck = await fetch(`${supabaseUrl}/rest/v1/`, {
+      headers: {
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+      },
+    });
     if (!healthcheck.ok) {
       throw new Error(`Supabase REST responded with status ${healthcheck.status}`);
     }
