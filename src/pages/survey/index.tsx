@@ -497,8 +497,8 @@ const Survey: React.FC = () => {
   if (loading) {
     return (
       <CenteredPanelPage
-        title="Loading Coverage Explorer"
-        description="Connecting to your coverage questions and preparing the first step."
+        title='Loading Coverage Explorer'
+        description='Connecting to your coverage questions and preparing the first step.'
         headerContent={
           <>
             <div
@@ -531,9 +531,9 @@ const Survey: React.FC = () => {
   if (!questions.length) {
     return (
       <CenteredPanelPage
-        title="No Coverage Questions Available Yet"
-        description="The coverage explorer is connected and ready, but there are no questions in the database yet."
-        secondaryDescription="Seed your question set or add coverage questions in Supabase, then refresh this page to begin testing the full flow."
+        title='No Coverage Questions Available Yet'
+        description='The coverage explorer is connected and ready, but there are no questions in the database yet.'
+        secondaryDescription='Seed your question set or add coverage questions in Supabase, then refresh this page to begin testing the full flow.'
       />
     );
   }
