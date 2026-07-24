@@ -1,92 +1,84 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
+import AppButton from '../components/AppButton';
+import PageShell from '../components/PageShell';
 import ProfileCard from '../components/ProfileCard';
-import Link from 'next/link';
+import SurfaceCard from '../components/SurfaceCard';
+import { toast } from 'sonner';
 
 const mainColors = {
-  yellow: '#FFD600',
-  accent: '#F7B32B',
-  dark: '#222222',
+  primary: '#0f766e',
+  primarySoft: '#ccfbf1',
+  dark: '#0f172a',
+  body: '#334155',
   white: '#FFFFFF',
 };
 
 const Results: React.FC = () => {
   const router = useRouter();
-  const { profile } = router.query;
+  const { outcome, profile } = router.query;
+  const resolvedOutcome = (outcome || profile) as string | undefined;
+  const hasShownNoOutcomeToast = useRef(false);
 
-  const handleRestart = () => {
-    router.push('/');
+  useEffect(() => {
+    if (!resolvedOutcome && !hasShownNoOutcomeToast.current) {
+      toast.info('No outcome was found. Complete the survey to generate a result.');
+      hasShownNoOutcomeToast.current = true;
+    }
+  }, [resolvedOutcome]);
+
+  const handleRestart = async () => {
+    toast.success('Starting a new survey...');
+    const didNavigate = await router.push('/');
+    if (!didNavigate) {
+      toast.error('Unable to restart right now.');
+    }
   };
 
-  const handleViewAllProfiles = () => {
-    if (profile) {
-      router.push(`/all-profiles?profile=${profile}`);
-    } else {
-      router.push('/all-profiles');
+  const handleViewAllProfiles = async () => {
+    if (!resolvedOutcome) {
+      toast.info('Viewing all outcomes without a selected result.');
+    }
+
+    const targetRoute = resolvedOutcome
+      ? `/all-profiles?outcome=${resolvedOutcome}`
+      : '/all-profiles';
+
+    const didNavigate = await router.push(targetRoute);
+    if (!didNavigate) {
+      toast.error('Unable to open outcomes right now.');
+    }
+
+    if (resolvedOutcome) {
+      toast.success('Showing all outcomes.');
     }
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        // background: `linear-gradient(135deg, ${mainColors.yellow} 0%, ${mainColors.accent} 100%)`,
-        backgroundImage: 'url(/images/bg.png)',
-        backgroundSize: 'cover',
-        backgroundRepeat: 'no-repeat',
-        backgroundPosition: 'center center',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        fontFamily: 'Montserrat, Arial, sans-serif',
-        padding: '2rem 1rem',
-        position: 'relative',
-      }}
-    >
-      <div
-        style={{
-          background: mainColors.white,
-          borderRadius: '1.5rem',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-          maxWidth: '420px',
-          width: '100%',
-          padding: '2rem 1.5rem',
-          textAlign: 'center',
-        }}
-      >
+    <PageShell style={{ position: 'relative' }}>
+      <SurfaceCard maxWidth={420} textAlign="center">
         <h1
           style={{
-            color: mainColors.accent,
+            color: mainColors.primary,
             fontWeight: 700,
             fontSize: '2rem',
             marginBottom: '2rem',
             letterSpacing: '0.02em',
           }}
         >
-          Your Shopper Profile
+          Your Coverage Match
         </h1>
-        {profile ? (
-          <ProfileCard type={profile as string} />
+        {resolvedOutcome ? (
+          <ProfileCard type={resolvedOutcome} />
         ) : (
           <p style={{ color: mainColors.dark }}>
-            No profile data available. Please complete the questionnaire.
+            No match data is available yet. Please complete the coverage explorer.
           </p>
         )}
-                    {/* No description for string profile here; handled in ProfileCard or below */}
         <div style={{ maxWidth: 900, margin: '2rem auto' }}>
-          <p style={{ textAlign: 'center', color: '#222', marginBottom: '2rem' }}>
-            We may all take on different shopping roles based on the current need on hand, but we
-            all have an underlying shopping style that drives how we shop or don&apos;t shop in some
-            cases. Shopping should be as enjoyable as possible and the team at The Unforgettable
-            Group is working hard to make that happen. Visit{' '}
-            <Link
-              style={{ color: '#222', fontWeight: 700, textDecoration: 'underline' }}
-              href="https://wildlovetails.com"
-            >
-              wildlovetails.com
-            </Link>{' '}
-            our inaugural online shopping site dedicated to pets and their people. We have many more
-            product categories. Follow us to stay in the know.
+          <p style={{ textAlign: 'center', color: mainColors.body, marginBottom: '2rem' }}>
+            This view shows one of three coverage paths so people can quickly compare the right
+            extra medical coverage direction for their situation.
           </p>
         </div>
         {/* Desktop/Tablet buttons */}
@@ -99,44 +91,19 @@ const Results: React.FC = () => {
             marginTop: '2rem',
           }}
         >
-          <button
+          <AppButton
             onClick={handleRestart}
-            style={{
-              padding: '0.75rem 1.5rem',
-              background: mainColors.yellow,
-              color: mainColors.dark,
-              fontWeight: 700,
-              fontSize: '1rem',
-              border: 'none',
-              borderRadius: '0.75rem',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-              width: '100%',
-            }}
+            variant="secondary"
+            fullWidth
+            style={{ fontWeight: 700 }}
           >
-            Restart Quiz
-          </button>
-          <button
-            onClick={handleViewAllProfiles}
-            style={{
-              padding: '0.75rem 1.5rem',
-              background: mainColors.accent,
-              color: mainColors.white,
-              fontWeight: 700,
-              fontSize: '1rem',
-              border: 'none',
-              borderRadius: '0.75rem',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              cursor: 'pointer',
-              transition: 'background 0.2s',
-              width: '100%',
-            }}
-          >
-            View All Shopper Profiles
-          </button>
+            Restart Explorer
+          </AppButton>
+          <AppButton onClick={handleViewAllProfiles} fullWidth style={{ fontWeight: 700 }}>
+            View All Coverage Paths
+          </AppButton>
         </div>
-      </div>
+      </SurfaceCard>
       {/* Mobile-only sticky button container */}
       <div
         className="results-buttons-mobile"
@@ -158,42 +125,17 @@ const Results: React.FC = () => {
           // display: 'none',
         }}
       >
-        <button
+        <AppButton
           onClick={handleRestart}
-          style={{
-            padding: '0.75rem 1.5rem',
-            background: mainColors.yellow,
-            color: mainColors.dark,
-            fontWeight: 700,
-            fontSize: '1rem',
-            border: 'none',
-            borderRadius: '0.75rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-            width: '100%',
-          }}
+          variant="secondary"
+          fullWidth
+          style={{ fontWeight: 700 }}
         >
-          Restart Quiz
-        </button>
-        <button
-          onClick={handleViewAllProfiles}
-          style={{
-            padding: '0.75rem 1.5rem',
-            background: mainColors.accent,
-            color: mainColors.white,
-            fontWeight: 700,
-            fontSize: '1rem',
-            border: 'none',
-            borderRadius: '0.75rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            cursor: 'pointer',
-            transition: 'background 0.2s',
-            width: '100%',
-          }}
-        >
-          View All Shopper Profiles
-        </button>
+          Restart Explorer
+        </AppButton>
+        <AppButton onClick={handleViewAllProfiles} fullWidth style={{ fontWeight: 700 }}>
+          View All Coverage Paths
+        </AppButton>
       </div>
       <style>{`
         @media (max-width: 600px) {
@@ -210,7 +152,7 @@ const Results: React.FC = () => {
           }
         }
       `}</style>
-    </div>
+    </PageShell>
   );
 };
 

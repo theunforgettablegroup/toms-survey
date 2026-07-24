@@ -31,16 +31,19 @@ export type Database = {
       answers: {
         Row: {
           answer_text: string;
+          display_order: number;
           id: number;
           question_id: number | null;
         };
         Insert: {
           answer_text: string;
+          display_order?: number;
           id?: number;
           question_id?: number | null;
         };
         Update: {
           answer_text?: string;
+          display_order?: number;
           id?: number;
           question_id?: number | null;
         };
@@ -51,23 +54,29 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'questions';
             referencedColumns: ['id'];
-          }
+          },
         ];
       };
       questions: {
         Row: {
           created_at: string | null;
+          display_order: number;
           id: number;
+          question_type: string;
           question_text: string;
         };
         Insert: {
           created_at?: string | null;
+          display_order?: number;
           id?: number;
+          question_type?: string;
           question_text: string;
         };
         Update: {
           created_at?: string | null;
+          display_order?: number;
           id?: number;
+          question_type?: string;
           question_text?: string;
         };
         Relationships: [];
@@ -75,18 +84,21 @@ export type Database = {
       response_answers: {
         Row: {
           answer_id: number | null;
+          free_text_answer: string | null;
           id: number;
           question_id: number | null;
           response_id: string | null;
         };
         Insert: {
           answer_id?: number | null;
+          free_text_answer?: string | null;
           id?: number;
           question_id?: number | null;
           response_id?: string | null;
         };
         Update: {
           answer_id?: number | null;
+          free_text_answer?: string | null;
           id?: number;
           question_id?: number | null;
           response_id?: string | null;
@@ -112,25 +124,28 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: 'responses';
             referencedColumns: ['id'];
-          }
+          },
         ];
       };
       responses: {
         Row: {
           created_at: string | null;
           id: string;
+          outcome_score: number | null;
           profile_type: string | null;
           user_id: string | null;
         };
         Insert: {
           created_at?: string | null;
           id?: string;
+          outcome_score?: number | null;
           profile_type?: string | null;
           user_id?: string | null;
         };
         Update: {
           created_at?: string | null;
           id?: string;
+          outcome_score?: number | null;
           profile_type?: string | null;
           user_id?: string | null;
         };
@@ -165,7 +180,7 @@ export type Tables<
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -176,12 +191,12 @@ export type Tables<
     ? R
     : never
   : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
-  ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
-      Row: infer R;
-    }
-    ? R
-    : never
-  : never;
+    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R;
+      }
+      ? R
+      : never
+    : never;
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
@@ -191,7 +206,7 @@ export type TablesInsert<
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -201,12 +216,12 @@ export type TablesInsert<
     ? I
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-  ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
-      Insert: infer I;
-    }
-    ? I
-    : never
-  : never;
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I;
+      }
+      ? I
+      : never
+    : never;
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
@@ -216,7 +231,7 @@ export type TablesUpdate<
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
-    : never = never
+    : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
@@ -226,12 +241,12 @@ export type TablesUpdate<
     ? U
     : never
   : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-  ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
-      Update: infer U;
-    }
-    ? U
-    : never
-  : never;
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U;
+      }
+      ? U
+      : never
+    : never;
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
@@ -241,14 +256,14 @@ export type Enums<
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
-    : never = never
+    : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-  ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
-  : never;
+    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+    : never;
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
@@ -258,14 +273,14 @@ export type CompositeTypes<
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
-    : never = never
+    : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals;
 }
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-  ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
-  : never;
+    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+    : never;
 
 export const Constants = {
   graphql_public: {

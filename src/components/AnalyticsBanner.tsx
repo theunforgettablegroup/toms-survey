@@ -21,12 +21,12 @@ export const AnalyticsBanner: React.FC = () => {
   return (
     <div
       style={{
-        background: '#fffbe6',
-        color: '#222',
+        background: '#ecfeff',
+        color: '#0f172a',
         padding: '0.75rem 2rem',
         textAlign: 'center',
         fontSize: '0.95rem',
-        borderBottom: '1px solid #ffe58f',
+        borderBottom: '1px solid #a5f3fc',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -36,13 +36,14 @@ export const AnalyticsBanner: React.FC = () => {
         alignItems: 'center',
         justifyContent: 'center',
         gap: '1rem',
-        fontFamily: 'Montserrat, Arial, sans-serif',
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
       }}
     >
       <span>
-        We collect anonymous analytics data (browser, device, location) to improve the survey
-        experience.{' '}
-        <Link href="/privacy-policy" style={{ color: '#222', textDecoration: 'underline' }}>
+        We collect anonymous analytics data (browser, device, and approximate location) to improve
+        the coverage explorer experience.{' '}
+        <Link href="/privacy-policy" style={{ color: '#0f172a', textDecoration: 'underline' }}>
           Privacy Policy
         </Link>
       </span>
@@ -51,7 +52,7 @@ export const AnalyticsBanner: React.FC = () => {
         style={{
           background: 'none',
           border: 'none',
-          color: '#222',
+          color: '#0f172a',
           fontWeight: 'bold',
           fontSize: '1.2rem',
           cursor: 'pointer',

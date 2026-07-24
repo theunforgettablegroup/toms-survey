@@ -1,15 +1,16 @@
 export const theme = {
   colors: {
-    primary: '#F6D55C', // Yellow
-    secondary: '#F79C42', // Orange
-    accent: '#D83333', // Red
-    background: '#FFFFFF', // White
-    text: '#333333', // Dark Gray
-    muted: '#F0F0F0', // Light Gray
+    primary: '#0f766e',
+    secondary: '#0ea5a4',
+    accent: '#155e75',
+    background: '#f8fafc',
+    surface: '#ffffff',
+    text: '#0f172a',
+    muted: '#e2e8f0',
   },
   fonts: {
-    main: 'Arial, sans-serif',
-    heading: 'Georgia, serif',
+    main: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
+    heading: '-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif',
   },
   spacing: {
     small: '8px',

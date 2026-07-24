@@ -1,0 +1,116 @@
+# Medicare Plan Selection Tool Gap Analysis
+
+Source document: [Medicare Plan Selection Tool - 2023-05-13.pdf](Resources/Medicare%20Plan%20Selection%20Tool%20-%202023-05-13.pdf)
+
+## Purpose of the source document
+
+The PDF describes a directional decision tool for helping people explore Medicare coverage options and decide between Original Medicare with Medigap plus Part D versus Medicare Advantage. It frames the tool as guidance, not a sales product, and emphasizes a weighted questionnaire that produces a 0 to 100 score.
+
+## Requirements called out in the PDF
+
+### 1. Core decision purpose
+
+- Help people choose between Original Medicare + Medigap + drug plan and Medicare Advantage.
+- Provide directional guidance, not a binding recommendation.
+- Make the tool feel unbiased and not driven by a profit motive.
+
+### 2. Input questions and factors
+
+The PDF expects a questionnaire that captures:
+
+- Age bands.
+- General health.
+- Chronic health conditions.
+- Cancer history.
+- Family history of serious medical issues.
+- Durable medical equipment needs.
+- Recent inpatient rehab history.
+- Prescription medication use.
+- Expected domestic travel.
+- Importance of consistent monthly out-of-pocket spending.
+- Importance of choosing a specific primary care doctor or clinic.
+- Importance of choosing a specific specialist or referral hospital.
+- Importance of seeing a specialist without a primary care referral.
+- Importance of extra benefits such as dental, hearing, and transportation.
+
+### 3. Scoring and output
+
+- Convert answers into a weighted 0 to 100 score.
+- The weighting is described as the core know-how of the tool.
+- Graph the score and explain it visually.
+- Use the score to indicate whether the person is better served by Medicare + Medigap + Drug Plan or Medicare Advantage.
+- Show a Gray Area / middle state for ambiguous cases.
+
+### 4. Guidance and next steps
+
+- Explain that the result is based on the current situation.
+- Tell users the tool matters most in the first year of Medicare enrollment.
+- Recommend consulting a local Medicare specialist who sells both Medigap and Medicare Advantage.
+- Mention that SHIP / SHIIP resources may be available.
+- Mention that Medicaid or other programs may apply for some users.
+- Encourage annual review because circumstances can change.
+
+### 5. Utility and follow-up features
+
+- Output can be emailed or printed.
+- Reminders can be set for upcoming surgeries or other changes that could affect future plan choice.
+- The site may guide users to how to find local Medicare specialists.
+- The PDF suggests optionally maintaining a list of local agents.
+- The PDF suggests possible future expansion to help choose Medigap+.
+
+## Current implementation status
+
+### Implemented
+
+- Public landing page and survey flow exist.
+- Questions are stored in Supabase and rendered in order.
+- Free-text and single-choice question types are supported.
+- A numeric outcome score is computed and stored on responses.
+- The app now maps responses into three coverage outcomes:
+  - Medicare-Medigap
+  - Gray Area
+  - Medicare Advantage
+- The UI has landing, survey, results, outcomes, and privacy policy pages.
+- The app includes a privacy banner and a privacy policy page.
+- Local Supabase seeding and reset scripts exist.
+
+### Partially implemented
+
+- The app computes a 0 to 100 score, but the current calculation is a generic normalization of answer position, not the PDF’s described weighted business logic.
+- The app shows a textual result and a coverage paths page, but it does not yet render the score as a graph.
+- The app stores the final score on the response record.
+
+### Missing or not yet represented
+
+- The exact PDF weighting model is not implemented.
+- The PDF’s full question set is not fully represented.
+- The age input is not banded as shown in the PDF.
+- The recent rehab facility question is not present.
+- The PDF’s guidance language about first-year enrollment, annual review, SHIP / SHIIP, Medicaid coordination, and consulting a local specialist is not surfaced in the results flow.
+- The PDF’s email / print output capability is not implemented.
+- Reminder functionality is not implemented.
+- The PDF’s local specialist finder or agent list is not implemented.
+- The graph visualization of the score is not implemented.
+- The tool does not yet preserve the PDF’s framing that the output is directional guidance rather than a firm recommendation.
+
+## Feature gaps by area
+
+### Scoring logic gap
+
+The biggest functional gap is the weighting model. The current app uses a simple normalized answer-position score, which is good enough for a prototype, but it does not reflect the specialized business logic described in the PDF. The PDF indicates that the weights are the tool’s key know-how, so this is the main area that would need domain input.
+
+### Questionnaire gap
+
+The current question set is smaller and simpler than the PDF version. It covers some of the same health and preference factors, but it omits at least the rehab-related question and the age-band treatment described in the source.
+
+### Guidance gap
+
+The PDF wants the output to guide next steps, not just label an outcome. The current app gives an outcome and a result page, but it does not yet provide the richer Medicare-specific guidance, annual-review reminder framing, or specialist consultation guidance.
+
+### Utility gap
+
+The PDF explicitly calls out print / email / reminder support and a local specialist search path. None of those follow-up utilities are present today.
+
+## Recommendation
+
+Keep the current 3-outcome coverage model and the stored score, but treat the current scoring logic as a placeholder until the business weighting rules are provided. Once those rules are available, the questionnaire and score computation can be aligned more closely with the source document without changing the overall app structure.

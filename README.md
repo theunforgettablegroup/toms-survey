@@ -1,36 +1,41 @@
-# Shopper Questionnaire App
+# Generic Survey Platform
 
 ## Overview
 
-The Shopper Questionnaire App is a mobile-first web application built with Next.js and React. It allows users to answer a series of questions to determine their shopper profile. The app is designed to be user-friendly and visually appealing, inspired by the color scheme and design of [The Yellow Brick Road](https://theunforgettablegroup.com/the-yellow-brick-road).
+This project is a reusable survey platform built with Next.js, React, and Supabase. It loads questions and answers from the database, walks users through a questionnaire, stores responses, and generates a default outcome classification.
+
+The app is intentionally generic so it can be reused for different survey topics. You can customize:
+
+- Question/answer content in Supabase
+- Outcome rules in `src/pages/survey/index.tsx`
+- Outcome catalog text in `src/data/outcomes.ts`
 
 ## Features
 
-- Interactive questionnaire to assess shopper profiles
-- Results page displaying the user's shopper profile
-- Responsive design for optimal viewing on mobile devices
-- Custom theme based on the provided website
+- Database-driven survey questions and answer choices
+- Session-level response tracking with completion status
+- Generic outcome generation with configurable scoring rules
+- Responsive UI suitable for desktop and mobile
+- Privacy policy and analytics disclosure banner
 
 ## Project Structure
 
 ```
-shopper-questionnaire-app
-├── src
-│   ├── pages
-│   │   ├── index.tsx        # Main entry point for the questionnaire
-│   │   └── results.tsx      # Displays results of the questionnaire
-│   ├── components
-│   │   ├── Question.tsx      # Component for rendering questions
-│   │   └── ProfileCard.tsx    # Component for displaying shopper profiles
-│   ├── styles
-│   │   └── theme.ts          # Theme and styling constants
-│   └── types
-│       └── index.ts          # TypeScript interfaces for data structures
-├── public
-│   └── favicon.ico           # Favicon for the application
-├── package.json              # npm configuration file
-├── tsconfig.json             # TypeScript configuration file
-└── README.md                 # Project documentation
+src/
+   components/
+      AnalyticsBanner.tsx      # Analytics disclosure notice
+      ProfileCard.tsx          # Generic outcome card view
+      Question.tsx             # Question and answer button UI
+   data/
+      outcomes.ts              # Default reusable outcomes
+   pages/
+      index.tsx                # Landing page
+      survey/index.tsx         # Survey flow and response persistence
+      results.tsx              # Selected outcome view
+      all-profiles.tsx         # Outcome catalog page
+      privacy-policy/index.tsx # Privacy policy page
+supabase/
+   migrations/               # Schema evolution and data model
 ```
 
 # Prerequisites
@@ -87,7 +92,7 @@ Before running the app, you need to configure environment variables for Supabase
    ```
 2. Navigate to the project directory:
    ```
-   cd shopper-questionnaire-app
+   cd toms-survey
    ```
 3. Install dependencies:
    ```
@@ -142,6 +147,13 @@ npm run dev
 ```
 
 The application will be available at `http://localhost:3000`.
+
+## Customizing for a New Survey
+
+1. Seed your own survey questions and answers in Supabase.
+2. Update `deriveSurveyOutcome` in `src/pages/survey/index.tsx` with your own business logic.
+3. Replace default entries in `src/data/outcomes.ts` with domain-specific outcomes.
+4. Optionally update page copy and theme tokens in `src/styles/theme.ts`.
 
 ## Contributing
 
