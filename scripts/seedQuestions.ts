@@ -12,13 +12,16 @@ if (!supabaseUrl || !supabaseKey) {
   );
 }
 
+const resolvedSupabaseUrl: string = supabaseUrl;
+const resolvedSupabaseKey: string = supabaseKey;
+
 if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
   console.warn(
     'Warning: SUPABASE_SERVICE_ROLE_KEY is not set. With current RLS policies, seeding questions/answers may fail for anon keys.'
   );
 }
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(resolvedSupabaseUrl, resolvedSupabaseKey);
 
 type SeedQuestion = {
   text: string;
@@ -174,10 +177,10 @@ async function seed() {
   validateNoDuplicateQuestionText(questions);
 
   try {
-    const healthcheck = await fetch(`${supabaseUrl}/rest/v1/`, {
+    const healthcheck = await fetch(`${resolvedSupabaseUrl}/rest/v1/`, {
       headers: {
-        apikey: supabaseKey,
-        Authorization: `Bearer ${supabaseKey}`,
+        apikey: resolvedSupabaseKey,
+        Authorization: `Bearer ${resolvedSupabaseKey}`,
       },
     });
     if (!healthcheck.ok) {
@@ -186,7 +189,7 @@ async function seed() {
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     throw new Error(
-      `Unable to reach Supabase at ${supabaseUrl}. Confirm local services are running (npx supabase start) and SUPABASE_URL points to the API URL. Root error: ${message}`
+      `Unable to reach Supabase at ${resolvedSupabaseUrl}. Confirm local services are running (npx supabase start) and SUPABASE_URL points to the API URL. Root error: ${message}`
     );
   }
 
