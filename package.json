@@ -12,9 +12,11 @@
     "db:start": "npx supabase start",
     "db:stop": "npx supabase stop",
     "db:reset": "npx supabase db reset",
+    "db:reset:local": "npx supabase db reset",
     "db:push": "npx supabase db push",
+    "db:push:remote": "npx supabase db push",
     "migration:new": "npx supabase migration new",
-    "migration:up": "npx supabase migration up",
+    "migration:up": "npm run db:push:remote",
     "seed:questions": "tsx scripts/seedQuestions.ts",
     "db:reset:seed": "npx supabase db reset && npm run seed:questions",
     "generate:types": "npx supabase gen types typescript --local > ./src/types/supabase.ts"
