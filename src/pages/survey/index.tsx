@@ -577,8 +577,8 @@ const Survey: React.FC = () => {
             Coverage Explorer
           </h1>
           <p style={{ color: '#334155', textAlign: 'center', marginBottom: '1.5rem' }}>
-            Answer each question to estimate which extra medical coverage path fits best for the
-            person exploring options.
+            Answer each question to estimate which medical coverage path fits best for the person
+            exploring options.
           </p>
           <div
             style={{

@@ -56,7 +56,7 @@ const Results: React.FC = () => {
 
   return (
     <PageShell style={{ position: 'relative' }}>
-      <SurfaceCard maxWidth={420} textAlign="center">
+      <SurfaceCard maxWidth={420} textAlign='center'>
         <h1
           style={{
             color: mainColors.primary,
@@ -78,12 +78,12 @@ const Results: React.FC = () => {
         <div style={{ maxWidth: 900, margin: '2rem auto' }}>
           <p style={{ textAlign: 'center', color: mainColors.body, marginBottom: '2rem' }}>
             This view shows one of three coverage paths so people can quickly compare the right
-            extra medical coverage direction for their situation.
+            medical coverage direction for their situation.
           </p>
         </div>
         {/* Desktop/Tablet buttons */}
         <div
-          className="results-buttons-desktop"
+          className='results-buttons-desktop'
           style={{
             display: 'flex',
             flexDirection: 'column',
@@ -93,7 +93,7 @@ const Results: React.FC = () => {
         >
           <AppButton
             onClick={handleRestart}
-            variant="secondary"
+            variant='secondary'
             fullWidth
             style={{ fontWeight: 700 }}
           >
@@ -106,7 +106,7 @@ const Results: React.FC = () => {
       </SurfaceCard>
       {/* Mobile-only sticky button container */}
       <div
-        className="results-buttons-mobile"
+        className='results-buttons-mobile'
         style={{
           position: 'fixed',
           left: 0,
@@ -127,7 +127,7 @@ const Results: React.FC = () => {
       >
         <AppButton
           onClick={handleRestart}
-          variant="secondary"
+          variant='secondary'
           fullWidth
           style={{ fontWeight: 700 }}
         >

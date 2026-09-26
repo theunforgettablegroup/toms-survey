@@ -64,7 +64,7 @@ Email, print, reminders, and specialist-finder features are all called out in th
 - The app persists a computed score on each response.
 - The app supports both free-text and single-choice questions.
 - The app already uses deterministic ordering for questions and answers.
-- The app now has a focus on extra medical coverage exploration instead of a generic survey.
+- The app now has a focus on medical coverage exploration instead of a generic survey.
 
 ## Recommended next step
 

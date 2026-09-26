@@ -20,8 +20,8 @@ const Landing: React.FC = () => {
     <>
       <AnalyticsBanner />
       <CenteredPanelPage
-        title="Coverage Explorer"
-        description="Help people explore extra medical coverage options and find the plan fit that matches their needs."
+        title='Medicare Coverage Explorer'
+        description='Help people explore medical coverage options and find the plan fit that matches their needs.'
       >
         <AppButton onClick={handleStart} style={{ padding: '0.875rem 2rem' }}>
           Start Exploring

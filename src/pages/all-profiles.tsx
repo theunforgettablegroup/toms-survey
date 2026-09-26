@@ -21,7 +21,7 @@ const AllProfiles: React.FC = () => {
   };
 
   return (
-    <PageShell padding="1rem">
+    <PageShell padding='1rem'>
       <AppButton
         onClick={handleBack}
         style={{ display: 'block', margin: '0 auto 2rem auto', fontWeight: 700 }}
@@ -29,11 +29,11 @@ const AllProfiles: React.FC = () => {
         Back to Results
       </AppButton>
 
-      <SurfaceCard maxWidth={980} boxShadow="0 8px 32px rgba(0,0,0,0.08)">
+      <SurfaceCard maxWidth={980} boxShadow='0 8px 32px rgba(0,0,0,0.08)'>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <p style={{ textAlign: 'center', color: '#334155', marginBottom: '2rem' }}>
-            These coverage paths are designed to help people exploring extra medical coverage find
-            the right direction before comparing plans in detail.
+            These coverage paths are designed to help people exploring medical coverage find the
+            right direction before comparing plans in detail.
           </p>
         </div>
         <h1
