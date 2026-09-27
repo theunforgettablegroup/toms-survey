@@ -324,7 +324,7 @@ const Results: React.FC = () => {
 
         @media print {
           @page {
-            margin: 0.6in;
+            margin: 0.3in;
             background: #ffffff !important;
           }
 
@@ -338,6 +338,9 @@ const Results: React.FC = () => {
             background: transparent !important;
             box-shadow: none !important;
             padding: 0 !important;
+            max-width: none !important;
+            width: 100% !important;
+            border-radius: 0 !important;
           }
 
           #results-page-shell {
@@ -353,6 +356,18 @@ const Results: React.FC = () => {
           #results-print-layout {
             display: block !important;
             padding: 0 !important;
+            max-width: none !important;
+            width: 100% !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+          }
+
+          #results-print-header {
+            margin-bottom: 1rem !important;
+          }
+
+          #results-print-header h1 {
+            font-size: 1.6rem !important;
           }
 
           #results-print-layout,
@@ -361,16 +376,33 @@ const Results: React.FC = () => {
             box-shadow: none !important;
           }
 
+          #results-print-layout p,
+          #results-print-layout li {
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            margin-top: 0 !important;
+          }
+
+          #results-print-layout h2 {
+            font-size: 1.2rem !important;
+            margin-bottom: 0.4rem !important;
+          }
+
+          #results-print-layout h3 {
+            font-size: 1.05rem !important;
+            margin-bottom: 0.4rem !important;
+          }
+
           #results-print-front-card,
           #results-print-next-step {
             border: 1px solid #cbd5e1 !important;
             border-radius: 0 !important;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+            padding: 0.75rem !important;
+            margin-bottom: 0.75rem !important;
           }
 
           #results-print-next-step {
-            margin-top: 1.5rem !important;
+            margin-top: 0.75rem !important;
           }
         }
       `}</style>
