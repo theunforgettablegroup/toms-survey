@@ -13,6 +13,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ type }) => {
 
   return (
     <div
+      id='profile-card'
       style={{
         perspective: '1200px',
         maxWidth: 420,
@@ -31,6 +32,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ type }) => {
       >
         {/* Front Side */}
         <div
+          id='profile-card-front'
           style={{
             background: '#f8fafc',
             borderRadius: '1.25rem',
@@ -49,14 +51,17 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ type }) => {
           <OutcomeIdentity
             outcome={outcome}
             badgeSize={88}
-            titleElement="h3"
-            titleFontSize="1.3rem"
-            summaryMarginBottom="0"
+            titleElement='h3'
+            titleFontSize='1.3rem'
+            summaryMarginBottom='0'
           />
-          <div style={{ marginTop: '0.75rem', color: '#888', fontSize: '0.95rem' }}>
+          <div
+            id='profile-card-front-actions'
+            style={{ marginTop: '0.75rem', color: '#888', fontSize: '0.95rem' }}
+          >
             <AppButton
               onClick={() => setFlipped(true)}
-              variant="ghost"
+              variant='ghost'
               style={{
                 fontSize: '0.95rem',
                 fontWeight: 600,
@@ -68,6 +73,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ type }) => {
         </div>
         {/* Back Side */}
         <div
+          id='profile-card-back'
           style={{
             background: '#ecfeff',
             borderRadius: '1.25rem',
@@ -90,7 +96,11 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ type }) => {
             {outcome.title}
           </h3>
           <p style={{ color: '#334155', fontSize: '1rem', lineHeight: 1.5 }}>{outcome.details}</p>
-          <AppButton onClick={() => setFlipped(false)} style={{ marginTop: '2rem' }}>
+          <AppButton
+            id='profile-card-back-button'
+            onClick={() => setFlipped(false)}
+            style={{ marginTop: '2rem' }}
+          >
             Back
           </AppButton>
         </div>

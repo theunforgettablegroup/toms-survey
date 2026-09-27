@@ -3,6 +3,7 @@ import { theme } from '../styles/theme';
 
 type SurfaceCardProps = {
   children: React.ReactNode;
+  id?: string;
   maxWidth?: number | string;
   padding?: string;
   textAlign?: React.CSSProperties['textAlign'];
@@ -13,6 +14,7 @@ type SurfaceCardProps = {
 
 const SurfaceCard: React.FC<SurfaceCardProps> = ({
   children,
+  id,
   maxWidth,
   padding = '2rem 1.5rem',
   textAlign = 'left',
@@ -22,6 +24,7 @@ const SurfaceCard: React.FC<SurfaceCardProps> = ({
 }) => {
   return (
     <div
+      id={id}
       style={{
         background: theme.colors.surface,
         width: '100%',

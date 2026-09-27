@@ -3,6 +3,7 @@ import { theme } from '../styles/theme';
 
 type PageShellProps = {
   children: React.ReactNode;
+  id?: string;
   centered?: boolean;
   padding?: string;
   style?: React.CSSProperties;
@@ -10,12 +11,14 @@ type PageShellProps = {
 
 const PageShell: React.FC<PageShellProps> = ({
   children,
+  id,
   centered = false,
   padding = '2rem 1rem',
   style,
 }) => {
   return (
     <div
+      id={id}
       style={{
         minHeight: '100vh',
         background: `linear-gradient(135deg, ${theme.colors.background} 0%, ${theme.colors.muted} 100%)`,
