@@ -478,7 +478,7 @@ const Survey: React.FC = () => {
 
       router.push({
         pathname: '/results',
-        query: { outcome },
+        query: { outcome, responseId },
       });
     }
   };

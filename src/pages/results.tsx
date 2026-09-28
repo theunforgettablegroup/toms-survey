@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import AppButton from '../components/AppButton';
@@ -8,7 +8,17 @@ import ProfileCard from '../components/ProfileCard';
 import RecommendedNextSteps from '../components/RecommendedNextSteps';
 import SurfaceCard from '../components/SurfaceCard';
 import { DEFAULT_OUTCOME_KEY, OUTCOME_CATALOG } from '../data/outcomes';
+import { createClient } from '../../supabase/client';
 import { toast } from 'sonner';
+
+const supabase = createClient();
+
+type PrintableResponse = {
+  questionId: number;
+  questionText: string;
+  answerText: string;
+  displayOrder: number;
+};
 
 const mainColors = {
   primary: '#0f766e',
@@ -20,11 +30,14 @@ const mainColors = {
 
 const Results: React.FC = () => {
   const router = useRouter();
-  const { outcome, profile } = router.query;
+  const { outcome, profile, responseId } = router.query;
   const resolvedOutcome = (outcome || profile) as string | undefined;
+  const resolvedResponseId = typeof responseId === 'string' ? responseId : undefined;
   const outcomeData =
     OUTCOME_CATALOG[resolvedOutcome || DEFAULT_OUTCOME_KEY] || OUTCOME_CATALOG[DEFAULT_OUTCOME_KEY];
   const hasShownNoOutcomeToast = useRef(false);
+  const [printableResponses, setPrintableResponses] = useState<PrintableResponse[]>([]);
+  const [isLoadingPrintableResponses, setIsLoadingPrintableResponses] = useState(false);
 
   useEffect(() => {
     if (!resolvedOutcome && !hasShownNoOutcomeToast.current) {
@@ -32,6 +45,113 @@ const Results: React.FC = () => {
       hasShownNoOutcomeToast.current = true;
     }
   }, [resolvedOutcome]);
+
+  useEffect(() => {
+    if (!resolvedResponseId) {
+      setPrintableResponses([]);
+      return;
+    }
+
+    let isActive = true;
+
+    const loadPrintableResponses = async () => {
+      setIsLoadingPrintableResponses(true);
+
+      const { data: responseAnswerRows, error: responseAnswersError } = await supabase
+        .from('response_answers')
+        .select('question_id, answer_id, free_text_answer')
+        .eq('response_id', resolvedResponseId);
+
+      if (responseAnswersError) {
+        if (isActive) {
+          setPrintableResponses([]);
+          toast.error('Unable to load saved survey answers for printing.');
+        }
+        setIsLoadingPrintableResponses(false);
+        return;
+      }
+
+      const questionIds = Array.from(
+        new Set((responseAnswerRows || []).map((row) => row.question_id).filter(Boolean))
+      );
+      const answerIds = Array.from(
+        new Set((responseAnswerRows || []).flatMap((row) => (row.answer_id ? [row.answer_id] : [])))
+      );
+
+      const [
+        { data: questionRows, error: questionsError },
+        { data: answerRows, error: answersError },
+      ] = await Promise.all([
+        questionIds.length
+          ? supabase
+              .from('questions')
+              .select('id, question_text, display_order')
+              .in('id', questionIds)
+              .order('display_order', { ascending: true })
+              .order('id', { ascending: true })
+          : Promise.resolve({ data: [], error: null }),
+        answerIds.length
+          ? supabase.from('answers').select('id, answer_text').in('id', answerIds)
+          : Promise.resolve({ data: [], error: null }),
+      ]);
+
+      if (questionsError || answersError) {
+        if (isActive) {
+          setPrintableResponses([]);
+          toast.error('Unable to prepare your printable survey answers.');
+        }
+        setIsLoadingPrintableResponses(false);
+        return;
+      }
+
+      const questionMap = new Map(
+        (questionRows || []).map((question) => [
+          question.id,
+          {
+            questionText: question.question_text,
+            displayOrder: question.display_order ?? Number.MAX_SAFE_INTEGER,
+          },
+        ])
+      );
+      const answerMap = new Map(
+        (answerRows || []).map((answer) => [answer.id, answer.answer_text])
+      );
+
+      const nextPrintableResponses = (responseAnswerRows || [])
+        .map((row) => {
+          const question = questionMap.get(row.question_id);
+
+          if (!question) {
+            return null;
+          }
+
+          return {
+            questionId: row.question_id,
+            questionText: question.questionText,
+            answerText:
+              row.free_text_answer || answerMap.get(row.answer_id) || 'No answer recorded',
+            displayOrder: question.displayOrder,
+          } satisfies PrintableResponse;
+        })
+        .filter((row): row is PrintableResponse => Boolean(row))
+        .sort(
+          (left, right) =>
+            left.displayOrder - right.displayOrder || left.questionId - right.questionId
+        );
+
+      if (isActive) {
+        setPrintableResponses(nextPrintableResponses);
+      }
+
+      setIsLoadingPrintableResponses(false);
+    };
+
+    loadPrintableResponses();
+
+    return () => {
+      isActive = false;
+    };
+  }, [resolvedResponseId]);
 
   const handleRestart = async () => {
     toast.success('Starting a new survey...');
@@ -63,6 +183,11 @@ const Results: React.FC = () => {
   const handlePrint = () => {
     if (!resolvedOutcome) {
       toast.info('Complete the survey first to print your result.');
+      return;
+    }
+
+    if (resolvedResponseId && isLoadingPrintableResponses) {
+      toast.info('Your saved answers are still loading for print. Please try again in a moment.');
       return;
     }
 
@@ -109,6 +234,7 @@ const Results: React.FC = () => {
             <OutcomeIdentity
               outcome={outcomeData}
               badgeSize={88}
+              showBadge={false}
               titleElement='h2'
               titleFontSize='1.6rem'
               summaryFontSize='1.05rem'
@@ -128,6 +254,46 @@ const Results: React.FC = () => {
           </div>
 
           <RecommendedNextSteps id='results-print-next-step' variant='print' />
+
+          <div
+            id='results-print-responses'
+            style={{
+              marginTop: '1rem',
+              padding: '1.25rem',
+              borderRadius: '1.25rem',
+              border: '1px solid #e2e8f0',
+              background: '#f8fafc',
+              textAlign: 'left',
+            }}
+          >
+            <h2
+              style={{
+                color: mainColors.dark,
+                fontSize: '1.2rem',
+                marginTop: 0,
+                marginBottom: '0.75rem',
+              }}
+            >
+              Survey Responses to Share
+            </h2>
+            {printableResponses.length > 0 ? (
+              <div id='results-print-responses-list' style={{ display: 'grid', gap: '0.75rem' }}>
+                {printableResponses.map((response) => (
+                  <div id='results-print-response-item' key={response.questionId}>
+                    <h3 style={{ color: mainColors.dark, fontSize: '1rem', margin: '0 0 0.2rem' }}>
+                      {response.questionText}
+                    </h3>
+                    <p style={{ color: mainColors.body, margin: 0 }}>{response.answerText}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p style={{ color: mainColors.body, margin: 0 }}>
+                Survey responses are only available when this result is opened from a completed
+                survey session.
+              </p>
+            )}
+          </div>
         </div>
 
         <div id='results-screen-layout' className='results-screen'>
@@ -394,15 +560,32 @@ const Results: React.FC = () => {
           }
 
           #results-print-front-card,
-          #results-print-next-step {
+          #results-print-next-step,
+          #results-print-responses {
             border: 1px solid #cbd5e1 !important;
             border-radius: 0 !important;
             padding: 0.75rem !important;
             margin-bottom: 0.75rem !important;
           }
 
-          #results-print-next-step {
+          #results-print-next-step,
+          #results-print-responses {
             margin-top: 0.75rem !important;
+          }
+
+          #results-print-responses {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+          }
+
+          #results-print-responses-list {
+            break-inside: auto !important;
+            page-break-inside: auto !important;
+          }
+
+          #results-print-response-item {
+            break-inside: avoid;
+            page-break-inside: avoid;
           }
         }
       `}</style>
